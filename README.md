@@ -1,5 +1,5 @@
 # Free Proxy Hunter
-App gets the list of the max 10 free proxies and tests response times of the proxies, then returns top 3 proxies as list with their response times.
+This app can get the list of the max 10 free proxies and tests response times of the proxies, then returns top 3 proxies as list with their response times.
 
 ## Installation:
 
@@ -16,3 +16,4 @@ App gets the list of the max 10 free proxies and tests response times of the pro
 - Go into `free-proxy-hunter` directory
 - Activate the environment with `source venv/bin/activate`
 - Run the app wiith `python fpc.py`
+
