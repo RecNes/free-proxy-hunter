@@ -5,7 +5,8 @@ This app can get the list of the max 10 free proxies and tests response times of
 
 ### Automatic:
 - Execute `curl -sSL https://raw.githubusercontent.com/RecNes/free-proxy-hunter/main/install.sh | bash` command in a linux console.
-- Execute `curl -sSL https://raw.githubusercontent.com/RecNes/free-proxy-hunter/main/install.bat -o install.bat && install.bat` command in a cmd or Power Shell.
+- Execute `curl -sSL https://raw.githubusercontent.com/RecNes/free-proxy-hunter/main/install.bat -o install.bat && install.bat` in cmd.
+- Execute `curl.exe -sSL "https://raw.githubusercontent.com/RecNes/free-proxy-hunter/main/install.bat" -OutFile "install.bat"; .\install.bat` in Power Shell
 
 ### Manual:
 - Fetch with `git clone https://github.com/RecNes/free-proxy-hunter.git`
