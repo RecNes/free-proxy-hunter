@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 # coding: utf-8
 
@@ -31,35 +32,67 @@ successful_proxies = dict()
 
 
 class CheckProxyThread(threading.Thread):
-    def __init__(self, proxy):
+    def __init__(self, proxy, max_len):
         super(CheckProxyThread, self).__init__()
         self.proxy = proxy
+        self.max_len = max_len
 
     def run(self):
-        print(f"Starting to check response time of proxies")
         try:
             start = time.time()
             response = requests.get(url, proxies={"http": proxy, "https": self.proxy}, timeout=10)
+            resp_code = response.status_code
             del response
-            end = time.time()
-            successful_proxies.update({end - start: self.proxy})
-            print(f"Time of {self.proxy} is:\t{end-start}")
+
+            if resp_code < 400:
+                end = time.time()
+                req_time = round(end - start, 1)
+                successful_proxies.update({self.proxy: str(req_time)})
+                print(f"- Time of {add_indentation(self.proxy, self.max_len)} is\t{req_time}s AND Response Code is: {resp_code}")
+            else:
+                print(f"- {add_indentation(self.proxy, self.max_len)} is FAILED with response code: {resp_code}")
+
         except Exception as uee:
+            print(f"- FAILED to connect to {add_indentation(self.proxy, self.max_len)}")
             pass
 
 thread_limit = 10 if len(proxies) > 10 else len(proxies)
 
+
+def add_indentation(proxy, max_len):
+    ip_addr, port = proxy.split(":")
+    padding = max_len - len(ip_addr)
+    return " " * padding + proxy
+
+
+def format_proxy_list(proxies):
+    formatted_list = list()
+    max_len = max(len(proxy.split(":")[0]) for proxy in proxies)
+
+    for proxy in proxies:
+        formatted_list.append(add_indentation(proxy, max_len))
+
+    return formatted_list, max_len
+
+
 if __name__ == "__main__":
-    print("{} proxies found".format(str(len(proxies))))
-    for item in proxies:
-        print(item)
+
+    print(f">>> [ {str(len(proxies))} proxies found ]\n")
+    formatted_list, max_len = format_proxy_list(proxies)
+    for _, item in enumerate(formatted_list, 1):
+        counter = f"{_}) "
+        if len(str(_)) < 2:
+            counter = f" {_}) "
+        print(f"{counter} {item}")
+
     thread_list = list()
     thread_available = True
 
     while proxies:
+        print(f"\n>>> [ Starting to check response time of proxies ]\n")
         while threading.active_count() <= thread_limit and proxies:
             proxy = proxies.pop()
-            sub_thread = CheckProxyThread(proxy)
+            sub_thread = CheckProxyThread(proxy, max_len)
             sub_thread.daemon = True
             thread_list.append(sub_thread)
             sub_thread.start()
@@ -67,12 +100,16 @@ if __name__ == "__main__":
         for sub_thread in thread_list:
             sub_thread.join()
 
-    sorted_successful_proxies = OrderedDict(sorted(successful_proxies.items()))
+    sorted_successful_proxies = OrderedDict(
+        sorted(
+            successful_proxies.items(), key=lambda item: item[1]
+        )
+    )
     count = 0
-    print("---- TOP 3 Proxies ----")
+    print("\n>>> [ ---- TOP 3 Proxies ---- ]\n")
     for key, val in sorted_successful_proxies.items():
         count += 1
-        print("Address: {} - Time: {}".format(str(val), str(key)))
+        print(f"Address: {str(key)} \t-\t Time: {str(val)}s")
         if count == 3:
             break
 
