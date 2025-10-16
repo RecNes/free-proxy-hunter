@@ -2,6 +2,11 @@
 App gets the list of the max 10 free proxies and tests response times of the proxies, then returns top 3 proxies as list with their response times.
 
 ## Installation:
+
+### Automatic:
+- Execute `curl -sSL https://raw.githubusercontent.com/RecNes/free-proxy-hunter/main/install.sh | bash` command in a linux console.
+
+### Manual:
 - Fetch with `git clone https://github.com/RecNes/free-proxy-hunter.git`
 - Create environment in free-proxy-hunter directory with `python -m venv venv`
 - Activate the environment with `source venv/bin/activate`
